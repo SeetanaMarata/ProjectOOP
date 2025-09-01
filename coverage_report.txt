@@ -1,7 +1,0 @@
-Name                        Stmts   Miss  Cover
------------------------------------------------
-src\ecommerce\__init__.py       0      0   100%
-src\ecommerce\models.py        24     11    54%
-src\ecommerce\utils.py         25     14    44%
------------------------------------------------
-TOTAL                          49     25    49%
