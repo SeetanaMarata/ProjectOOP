@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "projectoop"
+name = "ProjectOOP"
 version = "0.1.0"
 description = ""
 authors = ["Swetlana Mirzoeva <levka008@mail.ru>"]
@@ -9,6 +9,30 @@ readme = "README.md"
 python = "^3.13"
 
 
+[tool.poetry.group.dev.dependencies]
+pytest-cov = "^6.2.1"
+
+
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.3.0"
+black = "^25.1.0"
+isort = "^6.0.1"
+mypy = "^1.17.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "src.*"
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_missing_imports = false
