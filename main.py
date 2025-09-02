@@ -2,8 +2,7 @@
 Основной модуль приложения для управления товарами и категориями.
 """
 
-from src.ecommerce.models import Category, Product
-from src.ecommerce.utils import load_products_from_json
+from src.ecommerce.models import Category, LawnGrass, Product, Smartphone
 
 
 def main() -> None:
@@ -17,80 +16,89 @@ def main() -> None:
     # Создаем тестовые данные
     print("\n1. Создание тестовых товаров и категорий:")
 
-    # Создаем товары
-    product1 = Product("iPhone 15", "Смартфон Apple", 999.99, 10)
-    product2 = Product("Samsung Galaxy", "Смартфон Samsung", 799.99, 15)
-    product3 = Product("MacBook Pro", "Ноутбук Apple", 2499.99, 5)
+    # Создаем товары разных типов
+    product1 = Product("Наушники", "Беспроводные наушники", 199.99, 20)
+    smartphone1 = Smartphone(
+        "iPhone 15", "Смартфон Apple", 999.99, 10, "Высокая", "15 Pro", 256, "Black"
+    )
+    smartphone2 = Smartphone(
+        "Samsung Galaxy", "Смартфон Samsung", 799.99, 15, "Высокая", "S23", 128, "White"
+    )
+    lawn_grass1 = LawnGrass(
+        "Газонная трава Premium",
+        "Качественная трава",
+        49.99,
+        100,
+        "Германия",
+        14,
+        "Зеленый",
+    )
 
     print(f"Создан товар: {product1}")
-    print(f"Создан товар: {product2}")
-    print(f"Создан товар: {product3}")
+    print(f"Создан смартфон: {smartphone1}")
+    print(f"Создан смартфон: {smartphone2}")
+    print(f"Создана газонная трава: {lawn_grass1}")
 
     # Создаем категории
-    smartphones = Category("Смартфоны", "Мобильные телефоны", [product1, product2])
-    laptops = Category("Ноутбуки", "Портативные компьютеры", [product3])
+    electronics = Category(
+        "Электроника", "Электронные устройства", [product1, smartphone1, smartphone2]
+    )
+    garden = Category("Сад", "Товары для сада", [lawn_grass1])
 
-    print(f"\nСоздана категория: {smartphones}")
-    print(f"Создана категория: {laptops}")
+    print(f"\nСоздана категория: {electronics}")
+    print(f"Создана категория: {garden}")
 
-    # Демонстрация добавления товара через метод
-    print("\n2. Добавление нового товара в категорию:")
-    product4 = Product("iPad Air", "Планшет Apple", 699.99, 8)
-    laptops.add_product(product4)
-    print(f"Добавлен товар: {product4}")
+    # Демонстрация сложения товаров одного класса
+    print("\n2. Демонстрация сложения товаров одного класса:")
+    try:
+        total_smartphones = smartphone1 + smartphone2
+        print(f"Общая стоимость смартфонов: {total_smartphones:.2f} руб.")
+    except TypeError as e:
+        print(f"Ошибка: {e}")
 
-    # Демонстрация геттера products
-    print("\n3. Список товаров в категории 'Ноутбуки':")
-    print(laptops.products)
+    # Демонстрация ошибки при сложении товаров разных классов
+    print("\n3. Демонстрация ошибки при сложении разных классов:")
+    try:
+        invalid_total = smartphone1 + lawn_grass1
+        print(f"Результат: {invalid_total:.2f} руб.")
+    except TypeError as e:
+        print(f"Ожидаемая ошибка: {e}")
 
-    # Демонстрация работы с ценой
-    print("\n4. Изменение цены товара:")
-    print(f"Текущая цена iPhone 15: {product1.price}")
+    # Демонстрация добавления продуктов в категорию
+    print("\n4. Добавление новых товаров в категории:")
+    lawn_grass2 = LawnGrass(
+        "Газонная трава Standard", "Бюджетная трава", 29.99, 50, "Россия", 21, "Зеленый"
+    )
 
-    # Попытка установить отрицательную цену
-    product1.price = -100
-    print(f"Цена после попытки установить отрицательное значение: {product1.price}")
+    try:
+        garden.add_product(lawn_grass2)
+        print(f"Добавлена газонная трава: {lawn_grass2}")
+    except TypeError as e:
+        print(f"Ошибка: {e}")
 
-    # Корректное изменение цены
-    product1.price = 899.99
-    print(f"Новая цена iPhone 15: {product1.price}")
+    # Демонстрация ошибки при добавлении невалидного объекта
+    print("\n5. Демонстрация ошибки при добавлении невалидного объекта:")
+    try:
+        # Здесь передаем объект типа str вместо Product
+        invalid_object = "не товар"  # type: ignore
+        garden.add_product(invalid_object)
+        print("Неожиданно успешно добавлен невалидный объект")
+    except TypeError as e:
+        print(f"Ожидаемая ошибка: {e}")
 
     # Показываем статистику
-    print("\n5. Статистика:")
+    print("\n6. Статистика:")
     print(f"Всего категорий: {Category.category_count}")
     print(f"Всего товаров: {Category.product_count}")
 
-    # Загрузка данных из JSON
-    print("\n6. Загрузка данных из JSON:")
-    categories = load_products_from_json("data/products.json")
-
-    if categories:
-        print(f"Загружено категорий: {len(categories)}")
-        for category in categories:
-            print(f"  - {category.name}: {len(category.get_products_list())} товаров")
-
-        # Обновляем статистику
-        print("\n7. Обновленная статистика:")
-        print(f"Всего категорий: {Category.category_count}")
-        print(f"Всего товаров: {Category.product_count}")
-    else:
-        print("Не удалось загрузить данные из JSON-файла")
-
-    # Демонстрация сложения товаров
-    print("\n8. Демонстрация сложения товаров:")
-    total_value = product1 + product2
-    print(f"Общая стоимость {product1.name} и {product2.name}: {total_value:.2f} руб.")
-
     # Демонстрация итерации по товарам
-    print("\n9. Демонстрация итерации по товарам категории:")
-    print("Товары в категории 'Смартфоны':")
-    for product in smartphones:
+    print("\n7. Товары в категории 'Электроника':")
+    for product in electronics:
         print(f"  - {product}")
 
-    # Демонстрация нового строкового представления категории
-    print("\n10. Демонстрация нового строкового представления:")
-    print(f"Категория: {smartphones}")
-    print(f"Категория: {laptops}")
+    print("\n8. Товары в категории 'Сад':")
+    for product in garden:
+        print(f"  - {product}")
 
     print("\n=== Программа завершена ===")
 
