@@ -10,10 +10,48 @@
         "quantity": "20"
       },
       {
-        "name": "Мышь",
-        "description": "Беспроводная мышь",
+        "name": "iPhone 15 Pro",
+        "description": "Смартфон Apple",
+        "price": "999.99",
+        "quantity": "10",
+        "efficiency": "Высокая",
+        "model": "15 Pro",
+        "memory": "256",
+        "color": "Black"
+      },
+      {
+        "name": "Samsung Galaxy",
+        "description": "Смартфон Samsung",
+        "price": "799.99",
+        "quantity": "15",
+        "efficiency": "Высокая",
+        "model": "S23",
+        "memory": "128",
+        "color": "White"
+      }
+    ]
+  },
+  {
+    "name": "Сад",
+    "description": "Товары для сада",
+    "products": [
+      {
+        "name": "Газонная трава Premium",
+        "description": "Качественная трава из Германии",
         "price": "49.99",
-        "quantity": "15"
+        "quantity": "100",
+        "country": "Германия",
+        "germination_period": "14",
+        "color": "Зеленый"
+      },
+      {
+        "name": "Газонная трава Standard",
+        "description": "Бюджетная трава",
+        "price": "29.99",
+        "quantity": "50",
+        "country": "Россия",
+        "germination_period": "21",
+        "color": "Зеленый"
       }
     ]
   },
