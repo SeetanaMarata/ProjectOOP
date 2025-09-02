@@ -1,5 +1,6 @@
 import pytest
-from src.ecommerce.models import Category, Product
+
+from src.ecommerce.models import Category, CategoryIterator, Product
 
 
 class TestProduct:
@@ -66,6 +67,25 @@ class TestProduct:
         assert result == existing_product
         assert existing_product.quantity == 5  # 3 + 2
         assert existing_product.price == 75.0  # Выбрана максимальная цена
+
+    def test_product_addition(self) -> None:
+        """Тест сложения товаров."""
+        product1 = Product("Товар 1", "Описание 1", 100.0, 10)
+        product2 = Product("Товар 2", "Описание 2", 200.0, 2)
+
+        result = product1 + product2
+        expected = (100.0 * 10) + (200.0 * 2)  # 1000 + 400 = 1400
+
+        assert result == expected
+
+    def test_product_addition_type_error(self) -> None:
+        """Тест ошибки при сложении с неправильным типом."""
+        product = Product("Товар", "Описание", 100.0, 5)
+
+        with pytest.raises(
+            TypeError, match="Можно складывать только объекты класса Product"
+        ):
+            product + "не товар"
 
 
 class TestCategory:
@@ -145,3 +165,58 @@ class TestCategory:
 
         # Проверяем, что переменная category используется
         assert category.name == "Test"
+
+    def test_category_str_with_quantities(self) -> None:
+        """Тест строкового представления категории с учетом количества товаров."""
+        product1 = Product("P1", "D1", 10.0, 3)  # quantity = 3
+        product2 = Product("P2", "D2", 20.0, 7)  # quantity = 7
+
+        category = Category("Test", "Desc", [product1, product2])
+
+        assert str(category) == "Test, количество продуктов: 10 шт."
+
+    def test_category_iterator(self) -> None:
+        """Тест итерации по товарам категории."""
+        product1 = Product("P1", "D1", 10.0, 1)
+        product2 = Product("P2", "D2", 20.0, 2)
+
+        category = Category("Test", "Desc", [product1, product2])
+
+        # Тестируем итерацию
+        products = list(category)
+        assert len(products) == 2
+        assert products[0].name == "P1"
+        assert products[1].name == "P2"
+
+        # Тестируем цикл for
+        names = []
+        for product in category:
+            names.append(product.name)
+
+        assert names == ["P1", "P2"]
+
+
+class TestCategoryIterator:
+    """Тесты для класса CategoryIterator."""
+
+    def test_iterator_initialization(self) -> None:
+        """Тест инициализации итератора."""
+        product = Product("Test", "Desc", 100.0, 5)
+        category = Category("Test", "Desc", [product])
+        iterator = CategoryIterator(category)
+
+        assert iterator.category == category
+        assert iterator.index == 0
+
+    def test_iterator_next(self) -> None:
+        """Тест получения следующего элемента."""
+        product1 = Product("P1", "D1", 10.0, 1)
+        product2 = Product("P2", "D2", 20.0, 2)
+        category = Category("Test", "Desc", [product1, product2])
+        iterator = CategoryIterator(category)
+
+        assert next(iterator) == product1
+        assert next(iterator) == product2
+
+        with pytest.raises(StopIteration):
+            next(iterator)
