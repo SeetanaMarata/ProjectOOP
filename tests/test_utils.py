@@ -39,8 +39,9 @@ class TestUtils:
 
         assert len(categories) == 1
         assert categories[0].name == "Test Category"
-        assert len(categories[0].products) == 1
-        assert categories[0].products[0].name == "Test Product"
+        # Используем внутренний метод для получения списка товаров
+        assert len(categories[0].get_products_list()) == 1
+        assert categories[0].get_products_list()[0].name == "Test Product"
 
     def test_load_nonexistent_file(self) -> None:
         """Тест загрузки из несуществующего файла."""

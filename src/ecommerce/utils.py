@@ -19,17 +19,14 @@ def load_products_from_json(file_path: str) -> List[Category]:
             data = json.load(file)
 
         categories = []
+        all_products: List[Product] = []  # Добавьте аннотацию типа здесь
 
         for category_data in data:
             products = []
             for product_data in category_data.get("products", []):
-                product = Product(
-                    name=product_data["name"],
-                    description=product_data["description"],
-                    price=float(product_data["price"]),
-                    quantity=int(product_data["quantity"]),
-                )
+                product = Product.new_product(product_data, all_products)
                 products.append(product)
+                all_products.append(product)
 
             category = Category(
                 name=category_data["name"],

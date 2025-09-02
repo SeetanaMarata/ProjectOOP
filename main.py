@@ -10,6 +10,10 @@ def main() -> None:
     """Основная функция приложения."""
     print("=== E-Commerce Management System ===")
 
+    # Сброс счетчиков для чистого теста
+    Category.category_count = 0
+    Category.product_count = 0
+
     # Создаем тестовые данные
     print("\n1. Создание тестовых товаров и категорий:")
 
@@ -29,22 +33,44 @@ def main() -> None:
     print(f"\nСоздана категория: {smartphones}")
     print(f"Создана категория: {laptops}")
 
+    # Демонстрация добавления товара через метод
+    print("\n2. Добавление нового товара в категорию:")
+    product4 = Product("iPad Air", "Планшет Apple", 699.99, 8)
+    laptops.add_product(product4)
+    print(f"Добавлен товар: {product4}")
+
+    # Демонстрация геттера products
+    print("\n3. Список товаров в категории 'Ноутбуки':")
+    print(laptops.products)
+
+    # Демонстрация работы с ценой
+    print("\n4. Изменение цены товара:")
+    print(f"Текущая цена iPhone 15: {product1.price}")
+
+    # Попытка установить отрицательную цену
+    product1.price = -100
+    print(f"Цена после попытки установить отрицательное значение: {product1.price}")
+
+    # Корректное изменение цены
+    product1.price = 899.99
+    print(f"Новая цена iPhone 15: {product1.price}")
+
     # Показываем статистику
-    print("\n2. Статистика:")
+    print("\n5. Статистика:")
     print(f"Всего категорий: {Category.category_count}")
     print(f"Всего товаров: {Category.product_count}")
 
     # Загрузка данных из JSON
-    print("\n3. Загрузка данных из JSON:")
+    print("\n6. Загрузка данных из JSON:")
     categories = load_products_from_json("data/products.json")
 
     if categories:
         print(f"Загружено категорий: {len(categories)}")
         for category in categories:
-            print(f"  - {category.name}: {len(category.products)} товаров")
+            print(f"  - {category.name}: {len(category.get_products_list())} товаров")
 
         # Обновляем статистику
-        print("\n4. Обновленная статистика:")
+        print("\n7. Обновленная статистика:")
         print(f"Всего категорий: {Category.category_count}")
         print(f"Всего товаров: {Category.product_count}")
     else:
