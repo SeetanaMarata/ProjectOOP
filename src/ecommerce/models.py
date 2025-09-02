@@ -2,7 +2,7 @@ from typing import Dict, List, Optional
 
 
 class Product:
-    """Класс для представления товара."""
+    """Базовый класс для представления товара."""
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
         """
@@ -41,6 +41,10 @@ class Product:
         """
         if not isinstance(other, Product):
             raise TypeError("Можно складывать только объекты класса Product")
+
+        # Задание 2: Проверка, что товары одного типа
+        if type(self) is not type(other):
+            raise TypeError("Нельзя складывать товары разных классов")
 
         return (self.price * self.quantity) + (other.price * other.quantity)
 
@@ -97,6 +101,96 @@ class Product:
                     return existing_product
 
         return cls(name, description, price, quantity)
+
+
+class Smartphone(Product):
+    """Класс для представления смартфона."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: str,
+        model: str,
+        memory: int,
+        color: str,
+    ):
+        """
+        Инициализация смартфона.
+
+        Args:
+            name: Название товара
+            description: Описание товара
+            price: Цена товара
+            quantity: Количество в наличии
+            efficiency: Производительность
+            model: Модель
+            memory: Объем встроенной памяти
+            color: Цвет
+        """
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+    def __repr__(self) -> str:
+        return (
+            f"Smartphone(name='{self.name}', price={self._price}, quantity={self.quantity}, "
+            f"model='{self.model}', memory={self.memory})"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.name} ({self.model}), {self._price} руб. "
+            f"Память: {self.memory}GB, Цвет: {self.color}. Остаток: {self.quantity} шт."
+        )
+
+
+class LawnGrass(Product):
+    """Класс для представления газонной травы."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: int,
+        color: str,
+    ):
+        """
+        Инициализация газонной травы.
+
+        Args:
+            name: Название товара
+            description: Описание товара
+            price: Цена товара
+            quantity: Количество в наличии
+            country: Страна-производитель
+            germination_period: Срок прорастания (дни)
+            color: Цвет
+        """
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+    def __repr__(self) -> str:
+        return (
+            f"LawnGrass(name='{self.name}', price={self._price}, quantity={self.quantity}, "
+            f"country='{self.country}', germination={self.germination_period} дней)"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.name}, {self._price} руб. "
+            f"Страна: {self.country}, Прорастание: {self.germination_period} дней, "
+            f"Цвет: {self.color}. Остаток: {self.quantity} шт."
+        )
 
 
 class CategoryIterator:
@@ -167,7 +261,7 @@ class Category:
 
     def __str__(self) -> str:
         """
-        Строковое представление категории.
+        Строкое представление категории.
         Считает общее количество товаров на складе (сумма quantity всех продуктов).
         """
         total_quantity = sum(product.quantity for product in self.__products)
@@ -182,13 +276,22 @@ class Category:
         """
         return CategoryIterator(self)
 
-    def add_product(self, product: Product) -> None:
+    def add_product(self, product: object) -> None:
         """
         Добавляет товар в категорию.
 
         Args:
             product: Объект товара для добавления
+
+        Raises:
+            TypeError: Если переданный объект не является продуктом или его наследником
         """
+        # Задание 3: Проверка, что добавляемый объект является продуктом или его наследником
+        if not isinstance(product, Product):
+            raise TypeError(
+                "Можно добавлять только объекты класса Product или его наследников"
+            )
+
         self.__products.append(product)
         Category.product_count += 1
 
