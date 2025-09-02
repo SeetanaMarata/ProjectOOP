@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Электроника",
+    "description": "Электронные устройства",
+    "products": [
+      {
+        "name": "Наушники",
+        "description": "Беспроводные наушники",
+        "price": "199.99",
+        "quantity": "20"
+      },
+      {
+        "name": "Мышь",
+        "description": "Беспроводная мышь",
+        "price": "49.99",
+        "quantity": "15"
+      }
+    ]
+  },
+  {
+    "name": "Книги",
+    "description": "Художественная литература",
+    "products": [
+      {
+        "name": "Python для начинающих",
+        "description": "Учебник по Python",
+        "price": "29.99",
+        "quantity": "10"
+      }
+    ]
+  }
+]
