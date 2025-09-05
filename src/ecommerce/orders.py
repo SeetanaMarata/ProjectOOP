@@ -1,4 +1,5 @@
 from .abstract_models import BaseContainer
+from .exceptions import ZeroQuantityError
 from .models import Product
 
 
@@ -12,7 +13,13 @@ class Order(BaseContainer):
         Args:
             product: Товар в заказе
             quantity: Количество товара
+
+        Raises:
+            ZeroQuantityError: Если количество равно нулю
         """
+        if quantity == 0:
+            raise ZeroQuantityError("Нельзя создать заказ с нулевым количеством товара")
+
         self.product = product
         self.quantity = quantity
         self.total_price = product.price * quantity
