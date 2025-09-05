@@ -1,10 +1,21 @@
 import pytest
 
+from src.ecommerce.abstract_models import BaseContainer, BaseProduct
+from src.ecommerce.mixins import ReprMixin
 from src.ecommerce.models import Category, LawnGrass, Product, Smartphone
 
 
 class TestProductInheritance:
     """Тесты для наследования классов продуктов."""
+
+    def test_product_inheritance(self) -> None:
+        """Тест, что Product наследуется от BaseProduct и ReprMixin."""
+        product = Product("Test", "Desc", 100.0, 5)
+
+        assert isinstance(product, BaseProduct)
+        assert isinstance(product, ReprMixin)
+        assert hasattr(product, "price")
+        assert hasattr(product, "__add__")
 
     def test_smartphone_inheritance(self) -> None:
         """Тест, что Smartphone наследуется от Product."""
@@ -13,6 +24,7 @@ class TestProductInheritance:
         )
 
         assert isinstance(smartphone, Product)
+        assert isinstance(smartphone, BaseProduct)
         assert smartphone.name == "iPhone 15"
         assert smartphone.efficiency == "Высокая"
         assert smartphone.model == "15 Pro"
@@ -32,6 +44,7 @@ class TestProductInheritance:
         )
 
         assert isinstance(lawn_grass, Product)
+        assert isinstance(lawn_grass, BaseProduct)
         assert lawn_grass.name == "Газонная трава Premium"
         assert lawn_grass.country == "Германия"
         assert lawn_grass.germination_period == 14
@@ -147,6 +160,21 @@ class TestCategoryProductRestrictions:
             category.add_product([])
 
 
+class TestCategoryInheritance:
+    """Тесты наследования категории."""
+
+    def test_category_inheritance(self) -> None:
+        """Тест, что Category наследуется от BaseContainer."""
+        product = Product("Test", "Desc", 100.0, 5)
+        category = Category("Test Category", "Desc", [product])
+
+        assert isinstance(category, BaseContainer)
+        assert hasattr(category, "name")
+        assert hasattr(category, "description")
+        assert hasattr(category, "__repr__")
+        assert hasattr(category, "__str__")
+
+
 class TestProductTypeChecking:
     """Тесты проверки типов продуктов."""
 
@@ -167,3 +195,5 @@ class TestProductTypeChecking:
         assert issubclass(Smartphone, Product)
         assert issubclass(LawnGrass, Product)
         assert issubclass(Product, Product)  # Класс является подклассом самого себя
+        assert issubclass(Product, BaseProduct)
+        assert issubclass(Category, BaseContainer)
