@@ -1,4 +1,7 @@
+import pytest
+
 from src.ecommerce.abstract_models import BaseContainer
+from src.ecommerce.exceptions import ZeroQuantityError
 from src.ecommerce.models import Product
 from src.ecommerce.orders import Order
 
@@ -14,6 +17,15 @@ class TestOrder:
         assert order.product == product
         assert order.quantity == 3
         assert order.total_price == 300.0
+
+    def test_order_with_zero_quantity_raises_error(self) -> None:
+        """Тест, что заказ с нулевым количеством вызывает исключение."""
+        product = Product("Test Product", "Desc", 100.0, 5)
+
+        with pytest.raises(
+            ZeroQuantityError, match="Нельзя создать заказ с нулевым количеством товара"
+        ):
+            Order(product, 0)
 
     def test_order_inheritance(self) -> None:
         """Тест, что Order наследуется от BaseContainer."""
