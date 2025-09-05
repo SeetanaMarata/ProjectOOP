@@ -3,6 +3,7 @@
 """
 
 from src.ecommerce.models import Category, LawnGrass, Product, Smartphone
+from src.ecommerce.orders import Order
 
 
 def main() -> None:
@@ -16,7 +17,7 @@ def main() -> None:
     # Создаем тестовые данные
     print("\n1. Создание тестовых товаров и категорий:")
 
-    # Создаем товары разных типов
+    # Создаем товары разных типов (будет выведена информация о создании благодаря миксину)
     product1 = Product("Наушники", "Беспроводные наушники", 199.99, 20)
     smartphone1 = Smartphone(
         "iPhone 15", "Смартфон Apple", 999.99, 10, "Высокая", "15 Pro", 256, "Black"
@@ -34,22 +35,22 @@ def main() -> None:
         "Зеленый",
     )
 
-    print(f"Создан товар: {product1}")
-    print(f"Создан смартфон: {smartphone1}")
-    print(f"Создан смартфон: {smartphone2}")
-    print(f"Создана газонная трава: {lawn_grass1}")
-
     # Создаем категории
     electronics = Category(
         "Электроника", "Электронные устройства", [product1, smartphone1, smartphone2]
     )
     garden = Category("Сад", "Товары для сада", [lawn_grass1])
 
-    print(f"\nСоздана категория: {electronics}")
-    print(f"Создана категория: {garden}")
+    # Демонстрация создания заказов
+    print("\n2. Создание заказов:")
+    order1 = Order(smartphone1, 2)
+    order2 = Order(lawn_grass1, 10)
+
+    print(f"Создан заказ: {order1}")
+    print(f"Создан заказ: {order2}")
 
     # Демонстрация сложения товаров одного класса
-    print("\n2. Демонстрация сложения товаров одного класса:")
+    print("\n3. Демонстрация сложения товаров одного класса:")
     try:
         total_smartphones = smartphone1 + smartphone2
         print(f"Общая стоимость смартфонов: {total_smartphones:.2f} руб.")
@@ -57,46 +58,24 @@ def main() -> None:
         print(f"Ошибка: {e}")
 
     # Демонстрация ошибки при сложении товаров разных классов
-    print("\n3. Демонстрация ошибки при сложении разных классов:")
+    print("\n4. Демонстрация ошибки при сложении разных классов:")
     try:
         invalid_total = smartphone1 + lawn_grass1
         print(f"Результат: {invalid_total:.2f} руб.")
     except TypeError as e:
         print(f"Ожидаемая ошибка: {e}")
 
-    # Демонстрация добавления продуктов в категорию
-    print("\n4. Добавление новых товаров в категории:")
-    lawn_grass2 = LawnGrass(
-        "Газонная трава Standard", "Бюджетная трава", 29.99, 50, "Россия", 21, "Зеленый"
-    )
-
-    try:
-        garden.add_product(lawn_grass2)
-        print(f"Добавлена газонная трава: {lawn_grass2}")
-    except TypeError as e:
-        print(f"Ошибка: {e}")
-
-    # Демонстрация ошибки при добавлении невалидного объекта
-    print("\n5. Демонстрация ошибки при добавлении невалидного объекта:")
-    try:
-        # Здесь передаем объект типа str вместо Product
-        invalid_object = "не товар"  # type: ignore
-        garden.add_product(invalid_object)
-        print("Неожиданно успешно добавлен невалидный объект")
-    except TypeError as e:
-        print(f"Ожидаемая ошибка: {e}")
-
     # Показываем статистику
-    print("\n6. Статистика:")
+    print("\n5. Статистика:")
     print(f"Всего категорий: {Category.category_count}")
     print(f"Всего товаров: {Category.product_count}")
 
     # Демонстрация итерации по товарам
-    print("\n7. Товары в категории 'Электроника':")
+    print("\n6. Товары в категории 'Электроника':")
     for product in electronics:
         print(f"  - {product}")
 
-    print("\n8. Товары в категории 'Сад':")
+    print("\n7. Товары в категории 'Сад':")
     for product in garden:
         print(f"  - {product}")
 
