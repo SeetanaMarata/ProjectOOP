@@ -2,7 +2,8 @@
 Основной модуль приложения для управления товарами и категориями.
 """
 
-from src.ecommerce.models import Category, LawnGrass, Product, Smartphone
+from src.ecommerce.exceptions import ZeroQuantityError
+from src.ecommerce.models import Category, Product
 from src.ecommerce.orders import Order
 
 
@@ -14,70 +15,57 @@ def main() -> None:
     Category.category_count = 0
     Category.product_count = 0
 
-    # Создаем тестовые данные
-    print("\n1. Создание тестовых товаров и категорий:")
+    # Демонстрация новой функциональности
+    print("\n=== Демонстрация новой функциональности ===")
 
-    # Создаем товары разных типов (будет выведена информация о создании благодаря миксину)
-    product1 = Product("Наушники", "Беспроводные наушники", 199.99, 20)
-    smartphone1 = Smartphone(
-        "iPhone 15", "Смартфон Apple", 999.99, 10, "Высокая", "15 Pro", 256, "Black"
-    )
-    smartphone2 = Smartphone(
-        "Samsung Galaxy", "Смартфон Samsung", 799.99, 15, "Высокая", "S23", 128, "White"
-    )
-    lawn_grass1 = LawnGrass(
-        "Газонная трава Premium",
-        "Качественная трава",
-        49.99,
-        100,
-        "Германия",
-        14,
-        "Зеленый",
-    )
-
-    # Создаем категории
-    electronics = Category(
-        "Электроника", "Электронные устройства", [product1, smartphone1, smartphone2]
-    )
-    garden = Category("Сад", "Товары для сада", [lawn_grass1])
-
-    # Демонстрация создания заказов
-    print("\n2. Создание заказов:")
-    order1 = Order(smartphone1, 2)
-    order2 = Order(lawn_grass1, 10)
-
-    print(f"Создан заказ: {order1}")
-    print(f"Создан заказ: {order2}")
-
-    # Демонстрация сложения товаров одного класса
-    print("\n3. Демонстрация сложения товаров одного класса:")
+    # 1. Тестирование исключения для нулевого количества
+    print("\n1. Тестирование исключения для нулевого количества:")
     try:
-        total_smartphones = smartphone1 + smartphone2
-        print(f"Общая стоимость смартфонов: {total_smartphones:.2f} руб.")
-    except TypeError as e:
+        Product("Невалидный товар", "Описание", 100.0, 0)
+        print("Ошибка: исключение не было вызвано")
+    except ZeroQuantityError as e:
+        print(f"✓ Правильно вызвано исключение: {e}")
+
+    # 2. Тестирование среднего ценника
+    print("\n2. Тестирование среднего ценника:")
+    empty_category = Category("Пустая категория", "Нет товаров", [])
+    print(f"Средняя цена в пустой категории: {empty_category.get_average_price()}")
+
+    # Создаем товары для тестирования
+    try:
+        product1 = Product("Товар 1", "Описание", 100.0, 5)
+        product2 = Product("Товар 2", "Описание", 200.0, 3)
+        category = Category("Тестовая категория", "Описание", [product1, product2])
+        print(f"Средняя цена в категории: {category.get_average_price()}")
+    except ZeroQuantityError as e:
         print(f"Ошибка: {e}")
 
-    # Демонстрация ошибки при сложении товаров разных классов
-    print("\n4. Демонстрация ошибки при сложении разных классов:")
+    # 3. Тестирование добавления с проверкой
+    print("\n3. Тестирование добавления с проверкой:")
+    test_category = Category("Тест", "Описание", [])
     try:
-        invalid_total = smartphone1 + lawn_grass1
-        print(f"Результат: {invalid_total:.2f} руб.")
-    except TypeError as e:
-        print(f"Ожидаемая ошибка: {e}")
+        test_product = Product("Тестовый товар", "Описание", 50.0, 2)
+        test_category.add_product_with_check(test_product)
+        print(f"Товаров в категории: {len(test_category.get_products_list())}")
+    except (ZeroQuantityError, TypeError) as e:
+        print(f"Ошибка при добавлении: {e}")
 
-    # Показываем статистику
-    print("\n5. Статистика:")
-    print(f"Всего категорий: {Category.category_count}")
-    print(f"Всего товаров: {Category.product_count}")
+    # 4. Тестирование заказов
+    print("\n4. Тестирование заказов:")
+    try:
+        order_product = Product("Товар для заказа", "Описание", 75.0, 10)
+        order = Order(order_product, 3)
+        print(f"Создан заказ: {order}")
 
-    # Демонстрация итерации по товарам
-    print("\n6. Товары в категории 'Электроника':")
-    for product in electronics:
-        print(f"  - {product}")
+        # Тестирование заказа с нулевым количеством
+        try:
+            Order(order_product, 0)
+            print("Ошибка: исключение не было вызвано")
+        except ZeroQuantityError as e:
+            print(f"✓ Правильно вызвано исключение для заказа: {e}")
 
-    print("\n7. Товары в категории 'Сад':")
-    for product in garden:
-        print(f"  - {product}")
+    except ZeroQuantityError as e:
+        print(f"Ошибка при создании заказа: {e}")
 
     print("\n=== Программа завершена ===")
 

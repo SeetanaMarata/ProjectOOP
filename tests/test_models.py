@@ -197,3 +197,21 @@ class TestProductTypeChecking:
         assert issubclass(Product, Product)  # Класс является подклассом самого себя
         assert issubclass(Product, BaseProduct)
         assert issubclass(Category, BaseContainer)
+
+
+class TestProductEdgeCases:
+    """Тесты для edge cases продуктов."""
+
+    def test_product_price_setter_increase(self) -> None:
+        """Тест увеличения цены товара."""
+        product = Product("Test", "Desc", 100.0, 5)
+        product.price = 150.0
+        assert product.price == 150.0
+
+    def test_product_price_setter_zero(self, capsys: pytest.CaptureFixture) -> None:
+        """Тест установки нулевой цены."""
+        product = Product("Test", "Desc", 100.0, 5)
+        product.price = 0  # Должно вызвать предупреждение
+        captured = capsys.readouterr()
+        assert "Цена не должна быть нулевая или отрицательная" in captured.out
+        assert product.price == 100.0  # Цена не должна измениться

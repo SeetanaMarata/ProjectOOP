@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional
 
 from .abstract_models import BaseContainer, BaseProduct
+from .exceptions import ZeroQuantityError
 from .mixins import ReprMixin
 
 
@@ -16,7 +17,16 @@ class Product(ReprMixin, BaseProduct):
             description: Описание товара
             price: Цена товара
             quantity: Количество в наличии
+
+        Raises:
+            ZeroQuantityError: Если количество равно нулю
         """
+        # Проверка на нулевое количество
+        if quantity == 0:
+            raise ZeroQuantityError(
+                "Товар с нулевым количеством не может быть добавлен"
+            )
+
         # 1. Сначала инициализируем все атрибуты BaseProduct
         self.name = name
         self.description = description
@@ -24,7 +34,6 @@ class Product(ReprMixin, BaseProduct):
         self.quantity = quantity
 
         # 2. Затем вызываем миксин (после установки всех атрибутов)
-        # Явно вызываем миксин без super()
         ReprMixin.__init__(self)
 
     def __str__(self) -> str:
@@ -71,6 +80,7 @@ class Product(ReprMixin, BaseProduct):
         if products_list:
             for existing_product in products_list:
                 if existing_product.name.lower() == name.lower():
+                    # Объединяем количество и выбираем максимальную цену
                     existing_product.quantity += quantity
                     if price > existing_product.price:
                         existing_product.price = price
@@ -207,6 +217,49 @@ class Category(BaseContainer):
 
         self.__products.append(product)
         Category.product_count += 1
+
+    def get_average_price(self) -> float:
+        """
+        Подсчитывает средний ценник всех товаров в категории.
+
+        Returns:
+            Средняя цена товаров или 0, если товаров нет
+        """
+        try:
+            total_price = sum(product.price for product in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0.0
+
+    def add_product_with_check(self, product: object) -> None:
+        """
+        Добавляет товар в категорию с проверкой на нулевое количество.
+
+        Args:
+            product: Объект товара для добавления
+
+        Raises:
+            ZeroQuantityError: Если количество товара равно нулю
+            TypeError: Если переданный объект не является продуктом
+        """
+        try:
+            if not isinstance(product, Product):
+                raise TypeError(
+                    "Можно добавлять только объекты класса Product или его наследников"
+                )
+
+            if product.quantity == 0:
+                raise ZeroQuantityError("Нельзя добавить товар с нулевым количеством")
+
+            self.__products.append(product)
+            Category.product_count += 1
+            print("Товар успешно добавлен")
+
+        except (ZeroQuantityError, TypeError) as e:
+            print(f"Ошибка при добавлении товара: {e}")
+            raise
+        finally:
+            print("Обработка добавления товара завершена")
 
     @property
     def products(self) -> str:

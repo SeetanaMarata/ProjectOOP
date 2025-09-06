@@ -3,6 +3,7 @@
 """
 
 from .abstract_models import BaseContainer, BaseProduct
+from .exceptions import ZeroQuantityError
 from .mixins import ReprMixin
 from .models import Category, CategoryIterator, LawnGrass, Product, Smartphone
 from .orders import Order
@@ -18,5 +19,6 @@ __all__ = [
     "BaseContainer",
     "ReprMixin",
     "Order",
+    "ZeroQuantityError",
     "load_products_from_json",
 ]

@@ -1,0 +1,11 @@
+Name                               Stmts   Miss  Cover
+------------------------------------------------------
+src\ecommerce\__init__.py              7      0   100%
+src\ecommerce\abstract_models.py      42     14    67%
+src\ecommerce\exceptions.py            2      0   100%
+src\ecommerce\mixins.py               11      0   100%
+src\ecommerce\models.py              131     31    76%
+src\ecommerce\orders.py               14      0   100%
+src\ecommerce\utils.py                49     20    59%
+------------------------------------------------------
+TOTAL                                256     65    75%

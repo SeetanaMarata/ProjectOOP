@@ -19,6 +19,16 @@ class TestBaseProduct:
         assert hasattr(BaseProduct, "price")
         assert hasattr(BaseProduct, "new_product")
 
+    def test_base_product_abstract_methods_signatures(self) -> None:
+        """Тест сигнатур абстрактных методов."""
+        # Проверка, что методы существуют с правильными сигнатурами
+        assert hasattr(BaseProduct, "__init__")
+        assert hasattr(BaseProduct, "__repr__")
+        assert hasattr(BaseProduct, "__str__")
+        assert hasattr(BaseProduct, "__add__")
+        assert hasattr(BaseProduct, "price")
+        assert hasattr(BaseProduct, "new_product")
+
 
 class TestBaseContainer:
     """Тесты для абстрактного класса BaseContainer."""
